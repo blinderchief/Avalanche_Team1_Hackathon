@@ -81,7 +81,9 @@ export const CommunityChat = ({ communityId, communityName }: CommunityChatProps
     <Card className="gradient-card border-border/50 h-[500px] flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2">
-          <UserIcon className="w-5 h-5" />
+          <div className="w-5 h-5 flex items-center justify-center">
+            <UserIcon className="w-5 h-5" />
+          </div>
           {communityName} Chat
         </CardTitle>
       </CardHeader>

@@ -75,7 +75,7 @@ const CreateMarket = () => {
           minDeposit: minDeposit,
           marketToken: CONTRACT_ADDRESSES.VUSD as `0x${string}`,
         }],
-      } as any);
+      });
 
       toast({
         title: "Creating Market...",
@@ -120,7 +120,7 @@ const CreateMarket = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28">
         {/* Back Button */}
         <Link to="/" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-smooth">
           <ArrowLeftIcon className="w-4 h-4 mr-2" />

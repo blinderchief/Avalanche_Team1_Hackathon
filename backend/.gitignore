@@ -1,0 +1,206 @@
+# Environment Variables - NEVER COMMIT THESE!
+.env
+.env.*
+!.env.example
+*.env
+*.env.*
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+.env/
+
+# UV Package Manager
+.python-version
+.venv/
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+database.db
+spectraq.db
+spectraq_agent.db
+*.db-journal
+*.db-shm
+*.db-wal
+
+# Alembic
+alembic/versions/*.py
+!alembic/versions/__init__.py
+
+# Redis dump files
+dump.rdb
+*.rdb
+
+# Logs
+logs/
+*.log
+app.log
+error.log
+access.log
+uvicorn.log
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+test-results/
+.tox/
+
+# mypy
+.mypy_cache/
+.dmyp.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# Profiling
+*.prof
+profile.stats
+*.pstats
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# MCP Server specific
+mcp_servers_local.json
+mcp_cache/
+*.mcp
+
+# AI Model cache
+.transformers_cache/
+.huggingface/
+model_cache/
+.cache/
+
+# FastAPI specific
+.pytest_cache/
+.mypy_cache/
+
+# Application specific
+instance/
+var/
+uploads/
+downloads/
+tmp/
+
+# Docker
+.dockerignore
+
+# Local development
+local_*
+dev_*
+debug_*
+test_*
+
+# Backup files
+*.orig
+*.rej
+
+# Package files
+*.tar.gz
+*.zip
+*.egg
+
+# Certificates and keys
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+certificates/
+keys/
+secrets/
+
+# Production config
+config.prod.py
+settings.prod.py
+prod_config.json
+
+# Monitoring and metrics
+*.pid
+*.seed
+*.pid.lock
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Sphinx documentation
+docs/_build/
+
+# PyBuilder
+target/
+
+# pyenv
+.python-version
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# Performance profiling
+*.perf

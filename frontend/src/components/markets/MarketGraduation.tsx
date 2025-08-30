@@ -48,7 +48,7 @@ export function MarketGraduation({
         abi: MARKET_ABI,
         functionName: 'graduateMarket',
         args: [BigInt(marketId)],
-      } as any);
+      });
       
       toast({
         title: "Market Graduation Initiated",

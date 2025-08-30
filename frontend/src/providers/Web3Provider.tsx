@@ -21,7 +21,6 @@ const avalancheFuji = {
   },
   testnet: true,
 } as const;
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactNode } from 'react';
 
 const config = createConfig({
@@ -40,8 +39,6 @@ const config = createConfig({
   },
 });
 
-const queryClient = new QueryClient();
-
 interface Web3ProviderProps {
   children: ReactNode;
 }
@@ -49,9 +46,7 @@ interface Web3ProviderProps {
 export function Web3Provider({ children }: Web3ProviderProps) {
   return (
     <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        {children}
-      </QueryClientProvider>
+      {children}
     </WagmiProvider>
   );
 }

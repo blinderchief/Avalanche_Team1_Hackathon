@@ -30,7 +30,7 @@ const MarketDetail = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28">
         {/* Back Button */}
         <Link to="/markets" className="inline-flex items-center text-muted-foreground hover:text-foreground mb-6 transition-smooth">
           <ArrowLeftIcon className="w-4 h-4 mr-2" />

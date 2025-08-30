@@ -11,6 +11,8 @@ import CreateMarket from "./pages/CreateMarket";
 import CreateProposal from "./pages/CreateProposal";
 import Portfolio from "./pages/Portfolio";
 import Profile from "./pages/Profile";
+import Agent from "./pages/Agent";
+import TestAgent from "./pages/TestAgent";
 import NotFound from "./pages/NotFound";
 import { Web3Provider } from "./providers/Web3Provider";
 
@@ -32,6 +34,8 @@ const App = () => (
             <Route path="/markets/:id/propose" element={<CreateProposal />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/profile/:address" element={<Profile />} />
+            <Route path="/agent" element={<Agent />} />
+            <Route path="/test-agent" element={<TestAgent />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

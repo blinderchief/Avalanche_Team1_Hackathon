@@ -41,7 +41,7 @@ export function ConnectWallet() {
     }
   };
 
-  const handleConnect = async (connector: any) => {
+  const handleConnect = async (connector: import('wagmi').Connector) => {
     try {
       setConnecting(true);
       await connect({ connector });

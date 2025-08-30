@@ -112,10 +112,10 @@ export function MarketCard({ market, className = "" }: MarketCardProps) {
               {market.category}
             </Badge>
           </div>
-          <h3 className="text-lg font-semibold text-foreground line-clamp-2 mt-2 group-hover:text-primary transition-colors">
+          <h3 className="text-lg font-semibold text-foreground mt-2 group-hover:text-primary transition-colors overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
             {market.title}
           </h3>
-          <p className="text-sm text-muted-foreground line-clamp-2">
+          <p className="text-sm text-muted-foreground overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
             {market.description}
           </p>
         </CardHeader>

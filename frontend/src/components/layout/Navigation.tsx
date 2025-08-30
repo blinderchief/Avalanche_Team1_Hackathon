@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { ConnectWallet } from '@/components/web3/ConnectWallet';
-import { ChartBarIcon, PlusIcon, UserIcon, CurrencyDollarIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { ChartBarIcon, PlusIcon, UserIcon, CurrencyDollarIcon, Bars3Icon, XMarkIcon, SparklesIcon } from '@heroicons/react/24/outline';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -24,6 +24,7 @@ export function Navigation() {
     { href: '/communities', label: 'Communities', icon: UserIcon },
     { href: '/create', label: 'Create Market', icon: PlusIcon },
     { href: '/portfolio', label: 'Portfolio', icon: UserIcon },
+    { href: '/agent', label: 'Agent', icon: SparklesIcon, badge: 'New' },
   ];
 
   return (
@@ -34,8 +35,16 @@ export function Navigation() {
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-3 group">
-            <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-glow transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(239,68,68,0.7)]">
-              <img src="/logo.png" alt="SpectraQ Logo" className="w-6 h-6" />
+            <div className="w-10 h-10 rounded-md logo-container flex items-center justify-center transition-all duration-300">
+              <img 
+                src="/logo-colored.svg" 
+                alt="SpectraQ Logo" 
+                className="w-9 h-9 object-contain logo-image"
+                onError={(e) => {
+                  e.currentTarget.onerror = null; 
+                  e.currentTarget.src = '/logo-transparent.png';
+                }}
+              />
             </div>
             <div className="flex flex-col">
               <span className="text-xl font-bold text-foreground">

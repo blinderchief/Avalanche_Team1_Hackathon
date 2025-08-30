@@ -167,7 +167,6 @@ const Index = () => {
     const steps = duration / stepTime;
     const increment = target / steps;
     let current = 0;
-    let timer: NodeJS.Timeout;
     
     const updateCount = () => {
       current += increment;
@@ -179,7 +178,7 @@ const Index = () => {
       }
     };
     
-    timer = setInterval(updateCount, stepTime);
+    const timer = setInterval(updateCount, stepTime);
     return () => clearInterval(timer);
   }, []);
 
@@ -527,8 +526,16 @@ const Index = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-1">
               <Link to="/" className="flex items-center space-x-3 group">
-                <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center shadow-glow">
-                  <img src="/logo.png" alt="SpectraQ Logo" className="w-6 h-6" />
+                <div className="w-10 h-10 rounded-md logo-container flex items-center justify-center">
+                  <img 
+                    src="/logo-colored.svg" 
+                    alt="SpectraQ Logo" 
+                    className="w-9 h-9 object-contain logo-image"
+                    onError={(e) => {
+                      e.currentTarget.onerror = null; 
+                      e.currentTarget.src = '/logo-transparent.png';
+                    }}
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-xl font-bold text-foreground">

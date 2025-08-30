@@ -15,12 +15,12 @@ export function useERC20Contract(address: `0x${string}`) {
   };
 }
 
-export function useMarketRead(functionName: string, args?: any[]) {
+export function useMarketRead(functionName: string, args?: unknown[]) {
   return useReadContract({
     address: CONTRACT_ADDRESSES.MARKET as `0x${string}`,
     abi: MARKET_ABI,
-    functionName: functionName as any,
-    args: args as any,
+    functionName: functionName as string,
+    args: args as readonly unknown[],
   });
 }
 
