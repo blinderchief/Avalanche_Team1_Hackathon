@@ -14,7 +14,8 @@ SpectraQ is a next-generation prediction markets platform built on Avalanche blo
 ### ✨ Key Features
 
 - **🤖 AI-Powered Agent**: SpectraQ AI Agent with real-time market analysis using multiple data sources
-- **📊 Real-time Market Data**: Live cryptocurrency prices, sentiment analysis, and market indicators
+- **�️ ComplAI Compliance Auditor**: AI-powered compliance checking for smart contracts (AML, GDPR, KYC, eERC)
+- **�📊 Real-time Market Data**: Live cryptocurrency prices, sentiment analysis, and market indicators
 - **🎯 Prediction Markets**: Create and participate in prediction markets on crypto, sports, politics, and tech
 - **💰 Avalanche Integration**: Built on Avalanche Fuji testnet with optimized smart contracts
 - **📱 Modern UI/UX**: Quantum-themed design with responsive interface and smooth animations
@@ -33,6 +34,7 @@ SpectraQ is a next-generation prediction markets platform built on Avalanche blo
 │                 │    │   + WebSocket    │    │   • CCXT        │
 │                 │    │   + PostgreSQL   │    │   • Fear&Greed  │
 │                 │    │   + Redis        │    │   • CryptoPanic │
+│                 │    │   + LangGraph    │    │   • ComplAI     │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
          │                        │                        │
          ▼                        ▼                        ▼
@@ -40,12 +42,52 @@ SpectraQ is a next-generation prediction markets platform built on Avalanche blo
 │   Avalanche     │    │   Gemini AI      │    │   External APIs │
 │   Smart         │    │   + Comput3.ai   │    │   + Web Crawlers│
 │   Contracts     │    │   Processing     │    │   + News Feeds  │
+│   + ComplAI     │    │   + Compliance   │    │   + Reg. APIs   │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+### 🛡️ ComplAI Compliance Auditor
+
+SpectraQ integrates ComplAI, an AI-powered compliance auditor that checks smart contracts and interchain interactions for regulatory compliance before predictions or trades.
+
+#### Key Features
+- **Multi-Standard Support**: AML, GDPR, KYC, eERC compliance checking
+- **AI-Powered Analysis**: Uses Google Gemini AI for intelligent contract analysis
+- **Avalanche Integration**: On-chain contract data fetching via C-Chain RPC
+- **Real-time Auditing**: Automatic compliance checks during agent interactions
+- **Interactive Fixes**: Clickable suggestions for compliance improvements
+
+#### Usage Examples
+```bash
+# Audit a smart contract
+"Audit this smart contract for AML and GDPR compliance"
+
+# Compliance-aware trading
+"Predict BTC price and audit this trade contract"
+
+# Multi-standard compliance
+"Check contract compliance for AML, KYC, and eERC standards"
+```
+
+#### Architecture
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   User Query    │───►│   Agent Service  │───►│   ComplAI MCP   │
+│                 │    │   + LangGraph    │    │   Server        │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+         │                        │                        │
+         ▼                        ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Compliance    │◄───│   Gemini AI      │◄───│   Avalanche     │
+│   Audit Result  │    │   Analysis       │    │   C-Chain RPC   │
 └─────────────────┘    └──────────────────┘    └─────────────────┘
 ```
 
 ### Backend Architecture (FastAPI + Python)
 - **AI Agent Service**: Processes user queries using MCP tools and Gemini AI
 - **MCP Integration**: Multiple MCP servers for market data (CoinGecko, CCXT, Fear & Greed Index)
+- **ComplAI Integration**: AI-powered compliance auditing for smart contracts
+- **LangGraph Workflows**: Stateful conversation management with compliance checks
 - **WebSocket Support**: Real-time agent communication and market updates
 - **Database Layer**: SQLAlchemy with PostgreSQL/SQLite support
 - **Caching**: Redis for session management and data caching

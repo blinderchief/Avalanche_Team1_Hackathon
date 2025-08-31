@@ -48,7 +48,7 @@ class Settings(BaseSettings):
     
     # MCP Configuration
     MCP_SERVERS_CONFIG_PATH: str = Field(
-        default="./config/mcp_servers.json",
+        default="../config/mcp_servers.json",
         description="Path to MCP servers configuration file"
     )
     

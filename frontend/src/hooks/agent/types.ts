@@ -1,3 +1,13 @@
+// Define compliance audit result type
+export interface ComplianceAuditResult {
+  risk_score: number;
+  issues: string[];
+  fixes: string[];
+  standards_checked: string[];
+  timestamp: string;
+  contract_address?: string;
+}
+
 // Define message types
 export interface Message {
   id: string;
@@ -6,6 +16,7 @@ export interface Message {
   timestamp: string | number;
   tool_name?: string;
   tool_calls?: ToolCall[];
+  compliance_audit?: ComplianceAuditResult;
 }
 
 // Define the type for tool calls

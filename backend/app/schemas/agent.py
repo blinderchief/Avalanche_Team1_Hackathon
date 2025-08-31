@@ -16,6 +16,7 @@ class QueryType(str, Enum):
     ON_CHAIN_ANALYSIS = "on_chain_analysis"
     GENERAL_CRYPTO = "general_crypto"
     TRADING_ADVICE = "trading_advice"
+    COMPLIANCE_AUDIT = "compliance_audit"
 
 
 class AgentQueryRequest(BaseModel):

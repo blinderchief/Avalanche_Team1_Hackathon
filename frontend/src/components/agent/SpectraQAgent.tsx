@@ -8,6 +8,7 @@ import { ArrowUpIcon, ChartBarIcon, CurrencyDollarIcon, ChevronDownIcon } from '
 import { useAccount } from 'wagmi';
 import { AgentMessage } from './AgentMessage';
 import { AgentToolDisplay } from './AgentToolDisplay';
+import { ComplianceDisplay } from './ComplianceDisplay';
 import { AgentProvider } from '@/providers/AgentProvider';
 import { useAgentContextHelper } from '@/hooks/useAgentContextHelper';
 
@@ -127,11 +128,26 @@ export function SpectraQAgent() {
           </div>
         ) : (
           messages.map((message, index) => (
-            <AgentMessage
-              key={index}
-              message={message}
-              isStreaming={isStreaming && index === messages.length - 1 && message.role === 'assistant'}
-            />
+            <div key={index}>
+              <AgentMessage
+                message={message}
+                isStreaming={isStreaming && index === messages.length - 1 && message.role === 'assistant'}
+              />
+              
+              {/* Display compliance audit results if available */}
+              {message.role === 'assistant' && message.compliance_audit && (
+                <div className="ml-10">
+                  <ComplianceDisplay 
+                    auditResult={message.compliance_audit}
+                    onFixClick={(fix) => {
+                      // Handle fix application
+                      console.log('Apply fix:', fix);
+                      // You could add logic here to apply the fix or show more details
+                    }}
+                  />
+                </div>
+              )}
+            </div>
           ))
         )}
         <div ref={messagesEndRef} />

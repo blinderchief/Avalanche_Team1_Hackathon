@@ -197,6 +197,10 @@ class MCPManager:
     async def _call_http_tool(self, server: MCPServer, tool_name: str, parameters: Dict[str, Any]) -> Any:
         """Call tool on HTTP-based server"""
         try:
+            # Special handling for ComplAI server
+            if server.name == "complai":
+                return await self._call_complai_tool(server, tool_name, parameters)
+
             # Implement MCP protocol for HTTP servers
             payload = {
                 "method": "tools/call",
@@ -218,6 +222,41 @@ class MCPManager:
         except Exception as e:
             raise Exception(f"HTTP tool call failed: {e}")
     
+    async def _call_complai_tool(self, server: MCPServer, tool_name: str, parameters: Dict[str, Any]) -> Any:
+        """Call ComplAI compliance audit tool"""
+        try:
+            if tool_name == "compliance_audit":
+                # Map parameters to ComplAI API format
+                payload = {
+                    "contract_code": parameters.get("contract_code", ""),
+                    "standards": parameters.get("standards", ["AML", "GDPR"]),
+                    "contract_address": parameters.get("contract_address")
+                }
+
+                response = await self.client.post(
+                    f"{server.config['url']}/tools/compliance_audit",
+                    json=payload,
+                    headers={"Content-Type": "application/json"}
+                )
+
+                response.raise_for_status()
+                result = response.json()
+
+                # Transform to expected format
+                return {
+                    "risk_score": result.get("risk_score", 0.0),
+                    "issues": result.get("issues", []),
+                    "fixes": result.get("fixes", []),
+                    "standards_checked": result.get("standards_checked", []),
+                    "timestamp": result.get("timestamp", ""),
+                    "contract_address": result.get("contract_address")
+                }
+            else:
+                raise Exception(f"Unknown ComplAI tool: {tool_name}")
+
+        except Exception as e:
+            raise Exception(f"ComplAI tool call failed: {e}")
+
     async def _call_process_tool(self, server: MCPServer, tool_name: str, parameters: Dict[str, Any]) -> Any:
         """Call tool on process-based server"""
         try:
@@ -263,6 +302,17 @@ class MCPManager:
     def _get_mock_tools(self, server_name: str) -> List[Dict[str, Any]]:
         """Get mock tools for development"""
         tools_map = {
+            "complai": [
+                {
+                    "name": "compliance_audit",
+                    "description": "Audit smart contracts for regulatory compliance (AML, GDPR, KYC, eERC)",
+                    "parameters": {
+                        "contract_code": "string",
+                        "standards": "array",
+                        "contract_address": "string (optional)"
+                    }
+                }
+            ],
             "coingecko": [
                 {"name": "get_coin_price", "description": "Get current coin price"},
                 {"name": "get_market_data", "description": "Get market data for coin"},

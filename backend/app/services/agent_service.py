@@ -22,6 +22,7 @@ from app.schemas.agent import (
 )
 from app.services.mcp_manager import MCPManager
 from app.services.gemini_client import GeminiClient
+from app.services.spectra_graph import SpectraQGraph
 from app.core.config import get_settings
 from app.core.exceptions import MCPServerError, AgentSessionError
 
@@ -38,13 +39,16 @@ class AgentService:
         self.redis = redis_client
         self.mcp_manager = MCPManager()
         self.gemini_client = GeminiClient()
+        self.spectra_graph = SpectraQGraph(
+            self.mcp_manager, self.gemini_client)
     
     async def process_query(
         self,
         query: str,
         session_id: Optional[str] = None,
         user_id: Optional[str] = None,
-        context: Optional[Dict[str, Any]] = None
+        context: Optional[Dict[str, Any]] = None,
+        use_langgraph: bool = False
     ) -> AgentQueryResponse:
         """
         Process a user query through the SpectraQ AI Agent
@@ -61,6 +65,30 @@ class AgentService:
         start_time = datetime.utcnow()
         response_id = f"resp_{uuid.uuid4().hex[:8]}"
         
+        # Use LangGraph for enhanced processing with compliance checks
+        if use_langgraph:
+            try:
+                graph_result = await self.spectra_graph.process_query(query, context)
+
+                # Convert LangGraph result to AgentQueryResponse format
+                return AgentQueryResponse(
+                    id=response_id,
+                    response=graph_result["response"],
+                    session_id=session_id,
+                    query_type=QueryType.COMPLIANCE_AUDIT if graph_result.get(
+                        "compliance_audit") else QueryType.GENERAL_CRYPTO,
+                    confidence_score=graph_result["confidence_score"],
+                    tools_used=[],  # TODO: Extract from graph result
+                    data_sources=[],
+                    processing_time_ms=int(
+                        (datetime.utcnow() - start_time).total_seconds() * 1000),
+                    token_usage={},
+                    follow_up_suggestions=[]
+                )
+            except Exception as e:
+                logger.warning(
+                    f"LangGraph processing failed, falling back to simple agent: {e}")
+
         try:
             # Analyze query to determine required tools
             query_analysis = await self._analyze_query(query)
@@ -429,6 +457,23 @@ class AgentService:
                 "parameters": {"min_value": 1000000}
             })
         
+        # Compliance audit queries
+        if any(word in query_lower for word in ["audit", "compliance", "contract", "smart contract", "regulatory", "aml", "gdpr", "kyc"]):
+            query_type = QueryType.COMPLIANCE_AUDIT
+            # Extract contract code if present in query (simplified)
+            contract_code = self._extract_contract_code(query)
+            standards = self._extract_standards(query)
+
+            if contract_code:
+                tools.append({
+                    "server": "complai",
+                    "tool": "compliance_audit",
+                    "parameters": {
+                        "contract_code": contract_code,
+                        "standards": standards
+                    }
+                })
+
         return {
             "type": query_type,
             "tools": tools,
@@ -603,6 +648,11 @@ You are powered by Google Gemini AI infrastructure."""
                 "What's your trading recommendation?",
                 "How does technical analysis look?",
                 "What are the key support levels?"
+            ],
+            QueryType.COMPLIANCE_AUDIT: [
+                "What are the most critical issues to fix first?",
+                "How can I implement these compliance fixes?",
+                "Are there any regulatory deadlines I need to meet?"
             ]
         }
         
@@ -615,3 +665,46 @@ You are powered by Google Gemini AI infrastructure."""
             "What should I know about crypto investing?",
             "Show me current market trends"
         ]
+
+    def _extract_contract_code(self, query: str) -> Optional[str]:
+        """Extract smart contract code from query (simplified)"""
+        # Look for code blocks or contract patterns
+        import re
+
+        # Check for Solidity code blocks
+        code_match = re.search(r'```solidity\s*(.*?)\s*```', query, re.DOTALL)
+        if code_match:
+            return code_match.group(1).strip()
+
+        # Check for generic code blocks
+        code_match = re.search(r'```\s*(.*?)\s*```', query, re.DOTALL)
+        if code_match:
+            return code_match.group(1).strip()
+
+        # Look for contract keywords and extract following text
+        contract_keywords = ['contract', 'function', 'pragma', 'solidity']
+        if any(keyword in query.lower() for keyword in contract_keywords):
+            # Return the query as potential contract code
+            return query
+
+        return None
+
+    def _extract_standards(self, query: str) -> List[str]:
+        """Extract compliance standards from query"""
+        standards = []
+        query_lower = query.lower()
+
+        if 'aml' in query_lower or 'money laundering' in query_lower:
+            standards.append('AML')
+        if 'gdpr' in query_lower or 'privacy' in query_lower:
+            standards.append('GDPR')
+        if 'kyc' in query_lower or 'know your customer' in query_lower:
+            standards.append('KYC')
+        if 'eerc' in query_lower or 'enhanced erc' in query_lower or 'avalanche' in query_lower:
+            standards.append('eERC')
+
+        # Default standards if none specified
+        if not standards:
+            standards = ['AML', 'GDPR', 'KYC']
+
+        return standards
