@@ -6,25 +6,111 @@ import { useParams, Link } from 'react-router-dom';
 import { ClockIcon, UsersIcon, CurrencyDollarIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { TokenPrices } from '@/components/markets/TokenPrices';
 import { MarketGraduation } from '@/components/markets/MarketGraduation';
+import { MarketChart } from '@/components/markets/MarketChart';
+import { AdvancedChart } from '@/components/markets/AdvancedChart';
+import { MarketStats } from '@/components/markets/MarketStats';
+import { useState, useEffect } from 'react';
+
+interface Market {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  endDate: string;
+  volume: string;
+  participants: number;
+  yesPrice: number;
+  noPrice: number;
+  status: 'active' | 'resolved' | 'upcoming';
+  creator: string;
+  createdAt: string;
+  proposals?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    endDate: string;
+    yesPrice: number;
+    noPrice: number;
+    volume: string;
+    participants: number;
+    status: 'active' | 'resolved' | 'upcoming';
+  }>;
+}
 
 const MarketDetail = () => {
   const { id } = useParams();
+  const [market, setMarket] = useState<Market | null>(null);
 
-  // Mock market data - in real app, fetch based on id
-  const market = {
-    id: id || '1',
-    title: 'Will Bitcoin reach $100,000 by end of 2024?',
-    description: 'This market resolves to YES if Bitcoin (BTC) reaches or exceeds $100,000 USD on any major exchange by December 31, 2024, 11:59 PM UTC. The price will be determined by the average of Coinbase, Binance, and Kraken at market close.',
-    category: 'Crypto',
-    endDate: '2024-12-31',
-    volume: '$2.4M',
-    participants: 1247,
-    yesPrice: 0.65,
-    noPrice: 0.35,
-    status: 'active' as const,
-    creator: '0x1234...5678',
-    createdAt: '2024-01-15',
-  };
+  // Load market data
+  useEffect(() => {
+    // First check if it's a user-created market
+    const stored = localStorage.getItem('userMarkets');
+    if (stored) {
+      const markets: Market[] = JSON.parse(stored);
+      const userMarket = markets.find((m: Market) => m.id === id);
+      if (userMarket) {
+        setMarket(userMarket);
+        return;
+      }
+    }
+
+    // Default market data if not found in user markets
+    const defaultMarket: Market = {
+      id: id || '1',
+      title: 'Will Bitcoin reach $100,000 by end of 2024?',
+      description: 'This market resolves to YES if Bitcoin (BTC) reaches or exceeds $100,000 USD on any major exchange by December 31, 2024, 11:59 PM UTC. The price will be determined by the average of Coinbase, Binance, and Kraken at market close.',
+      category: 'Crypto',
+      endDate: '2024-12-31',
+      volume: '$2.4M',
+      participants: 1247,
+      yesPrice: 0.65,
+      noPrice: 0.35,
+      status: 'active' as const,
+      creator: '0x1234...5678',
+      createdAt: '2024-01-15',
+      proposals: [
+        {
+          id: 'btc-100k',
+          title: 'BTC reaches $100,000 by December 2024',
+          description: 'Bitcoin will reach or exceed $100,000 USD on major exchanges',
+          endDate: '2024-12-31',
+          yesPrice: 0.65,
+          noPrice: 0.35,
+          volume: '$1.2M',
+          participants: 623,
+          status: 'active' as const
+        },
+        {
+          id: 'btc-80k',
+          title: 'BTC reaches $80,000 by November 2024',
+          description: 'Bitcoin will reach or exceed $80,000 USD before November 30th',
+          endDate: '2024-11-30',
+          yesPrice: 0.78,
+          noPrice: 0.22,
+          volume: '$850K',
+          participants: 412,
+          status: 'active' as const
+        },
+        {
+          id: 'btc-120k',
+          title: 'BTC reaches $120,000 by end of 2024',
+          description: 'Bitcoin will reach or exceed $120,000 USD by December 31st',
+          endDate: '2024-12-31',
+          yesPrice: 0.42,
+          noPrice: 0.58,
+          volume: '$650K',
+          participants: 298,
+          status: 'active' as const
+        }
+      ]
+    };
+    
+    setMarket(defaultMarket);
+  }, [id]);
+
+  if (!market) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -76,17 +162,82 @@ const MarketDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Trading Chart Placeholder */}
-            <Card className="gradient-card border-border/50">
-              <CardHeader>
-                <CardTitle>Price History</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="h-64 bg-muted/20 rounded-lg flex items-center justify-center">
-                  <p className="text-muted-foreground">Trading chart will be implemented here</p>
-                </div>
-              </CardContent>
-            </Card>
+            {/* Trading Chart with Proposals */}
+            {market.proposals && market.proposals.length > 0 ? (
+              <div className="space-y-6">
+                <AdvancedChart marketId={market.id} proposals={market.proposals} />
+                <MarketChart marketId={market.id} proposals={market.proposals} />
+              </div>
+            ) : (
+              <Card className="gradient-card border-border/50">
+                <CardHeader>
+                  <CardTitle>Price History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="h-64 bg-muted/20 rounded-lg flex items-center justify-center">
+                    <p className="text-muted-foreground">No proposals available for this market</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Market Statistics */}
+            <MarketStats market={market} />
+
+            {/* Individual Proposals */}
+            {market.proposals && market.proposals.length > 0 && (
+              <Card className="gradient-card border-border/50">
+                <CardHeader>
+                  <CardTitle>Market Proposals</CardTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Individual predictions within this market
+                  </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {market.proposals.map((proposal) => (
+                      <Card key={proposal.id} className="bg-muted/20 border-border/30">
+                        <CardContent className="pt-4">
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-foreground mb-2">{proposal.title}</h4>
+                              <p className="text-sm text-muted-foreground mb-3">{proposal.description}</p>
+                              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
+                                <span>Ends: {new Date(proposal.endDate).toLocaleDateString()}</span>
+                                <span>{proposal.volume} volume</span>
+                                <span>{proposal.participants} participants</span>
+                                <Badge 
+                                  variant="outline" 
+                                  className={`text-xs ${
+                                    proposal.status === 'active' 
+                                      ? 'border-success text-success' 
+                                      : proposal.status === 'resolved'
+                                      ? 'border-muted text-muted-foreground'
+                                      : 'border-warning text-warning'
+                                  }`}
+                                >
+                                  {proposal.status}
+                                </Badge>
+                              </div>
+                            </div>
+                            <div className="flex space-x-2 ml-4">
+                              <div className="text-center bg-success/10 border border-success/20 rounded-lg p-3 min-w-[80px]">
+                                <div className="text-xs font-medium text-success mb-1">YES</div>
+                                <div className="text-sm font-bold text-success">${proposal.yesPrice.toFixed(3)}</div>
+                              </div>
+                              <div className="text-center bg-destructive/10 border border-destructive/20 rounded-lg p-3 min-w-[80px]">
+                                <div className="text-xs font-medium text-destructive mb-1">NO</div>
+                                <div className="text-sm font-bold text-destructive">${proposal.noPrice.toFixed(3)}</div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Activity Feed */}
             <Card className="gradient-card border-border/50">

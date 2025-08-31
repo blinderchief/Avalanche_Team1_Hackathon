@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ClockIcon, CurrencyDollarIcon, UsersIcon, FireIcon, ArrowTrendingUpIcon } from '@heroicons/react/24/outline';
+import { ClockIcon, CurrencyDollarIcon, UsersIcon, FireIcon, ArrowTrendingUpIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import { Card, CardContent, CardHeader, CardFooter } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,13 @@ interface Market {
   yesPrice: number;
   noPrice: number;
   status: 'active' | 'resolved' | 'upcoming';
+  proposals?: Array<{
+    id: string;
+    title: string;
+    yesPrice: number;
+    noPrice: number;
+    status: 'active' | 'resolved' | 'upcoming';
+  }>;
 }
 
 interface MarketCardProps {
@@ -162,10 +169,45 @@ export function MarketCard({ market, className = "" }: MarketCardProps) {
               <span className="text-xs text-muted-foreground">{market.volume}</span>
             </div>
             <div className="flex flex-col items-center justify-center bg-muted/30 rounded-md p-2">
-              <UsersIcon className="w-4 h-4 text-muted-foreground mb-1" />
-              <span className="text-xs text-muted-foreground">{market.participants}</span>
+              {market.proposals && market.proposals.length > 0 ? (
+                <>
+                  <DocumentTextIcon className="w-4 h-4 text-muted-foreground mb-1" />
+                  <span className="text-xs text-muted-foreground">{market.proposals.length} proposals</span>
+                </>
+              ) : (
+                <>
+                  <UsersIcon className="w-4 h-4 text-muted-foreground mb-1" />
+                  <span className="text-xs text-muted-foreground">{market.participants}</span>
+                </>
+              )}
             </div>
           </div>
+          
+          {/* Proposals preview for user-created markets */}
+          {market.proposals && market.proposals.length > 0 && (
+            <div className="mt-3 pt-3 border-t border-border/30">
+              <div className="text-xs text-muted-foreground mb-2">Top Proposals:</div>
+              <div className="space-y-1">
+                {market.proposals.slice(0, 2).map((proposal) => (
+                  <div key={proposal.id} className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground truncate flex-1 mr-2">
+                      {proposal.title}
+                    </span>
+                    <div className="flex space-x-1">
+                      <span className="text-success font-medium">${proposal.yesPrice.toFixed(2)}</span>
+                      <span className="text-muted-foreground">/</span>
+                      <span className="text-destructive font-medium">${proposal.noPrice.toFixed(2)}</span>
+                    </div>
+                  </div>
+                ))}
+                {market.proposals.length > 2 && (
+                  <div className="text-xs text-muted-foreground text-center pt-1">
+                    +{market.proposals.length - 2} more proposals
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </CardContent>
         
         <CardFooter className="pt-0 pb-4 px-4 relative z-10">

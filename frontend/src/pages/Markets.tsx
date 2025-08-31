@@ -4,11 +4,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { useState } from 'react';
+import { MagnifyingGlassIcon, FunnelIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 // Mock data - in real app, this would come from API
-const allMarkets = [
+const allDefaultMarkets = [
   {
     id: '1',
     title: 'Will Bitcoin reach $100,000 by end of 2024?',
@@ -20,6 +21,30 @@ const allMarkets = [
     yesPrice: 0.65,
     noPrice: 0.35,
     status: 'active' as const,
+    proposals: [
+      {
+        id: 'btc-100k',
+        title: 'BTC reaches $100,000 by December 2024',
+        description: 'Bitcoin will reach or exceed $100,000 USD on major exchanges',
+        endDate: '2024-12-31',
+        yesPrice: 0.65,
+        noPrice: 0.35,
+        volume: '$1.2M',
+        participants: 623,
+        status: 'active' as const
+      },
+      {
+        id: 'btc-80k',
+        title: 'BTC reaches $80,000 by November 2024',
+        description: 'Bitcoin will reach or exceed $80,000 USD before November 30th',
+        endDate: '2024-11-30',
+        yesPrice: 0.78,
+        noPrice: 0.22,
+        volume: '$850K',
+        participants: 412,
+        status: 'active' as const
+      }
+    ]
   },
   {
     id: '2',
@@ -32,16 +57,76 @@ const allMarkets = [
     yesPrice: 0.42,
     noPrice: 0.58,
     status: 'active' as const,
+    proposals: [
+      {
+        id: 'gpt5-q2',
+        title: 'GPT-5 released in Q2 2024',
+        description: 'OpenAI will release GPT-5 between April and June 2024',
+        endDate: '2024-06-30',
+        yesPrice: 0.25,
+        noPrice: 0.75,
+        volume: '$400K',
+        participants: 256,
+        status: 'active' as const
+      },
+      {
+        id: 'gpt5-h2',
+        title: 'GPT-5 released in H2 2024',
+        description: 'OpenAI will release GPT-5 in the second half of 2024',
+        endDate: '2024-12-31',
+        yesPrice: 0.58,
+        noPrice: 0.42,
+        volume: '$750K',
+        participants: 412,
+        status: 'active' as const
+      }
+    ]
   },
   // Add more markets...
 ];
 
 const categories = ['All', 'Crypto', 'AI', 'Stocks', 'Economics', 'Politics', 'Sports', 'Tech'];
 
+interface Market {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  endDate: string;
+  volume: string;
+  participants: number;
+  yesPrice: number;
+  noPrice: number;
+  status: 'active' | 'resolved' | 'upcoming';
+  proposals?: Array<{
+    id: string;
+    title: string;
+    description: string;
+    endDate: string;
+    yesPrice: number;
+    noPrice: number;
+    volume: string;
+    participants: number;
+    status: 'active' | 'resolved' | 'upcoming';
+  }>;
+}
+
 const Markets = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [sortBy, setSortBy] = useState('newest');
+  const [userMarkets, setUserMarkets] = useState<Market[]>([]);
+
+  // Load user-created markets from localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem('userMarkets');
+    if (stored) {
+      setUserMarkets(JSON.parse(stored));
+    }
+  }, []);
+
+  // Combine default markets with user-created markets
+  const allMarkets = [...allDefaultMarkets, ...userMarkets];
 
   const filteredMarkets = allMarkets.filter(market => {
     const matchesSearch = market.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -57,10 +142,20 @@ const Markets = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-28">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-foreground mb-4">Prediction Markets</h1>
-          <p className="text-lg text-muted-foreground">
-            Discover and trade on real-world event outcomes
-          </p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-foreground mb-4">Prediction Markets</h1>
+              <p className="text-lg text-muted-foreground">
+                Discover and trade on real-world event outcomes
+              </p>
+            </div>
+            <Link to="/create">
+              <Button className="btn-quantum">
+                <PlusIcon className="w-4 h-4 mr-2" />
+                Create Market
+              </Button>
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}

@@ -307,3 +307,9 @@ deployment-secrets.yml
 config.local.json
 settings.local.py
 local_settings.py
+
+ENVIRONMENT_SETUP.md
+GIT_SETUP_COMPLETE.md
+IMPLEMENTATION_SUMMARY.md
+MARKET_CREATION_GUIDE.md
+PRICE_HISTORY_ENHANCEMENT.md
