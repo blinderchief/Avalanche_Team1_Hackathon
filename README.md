@@ -1094,42 +1094,6 @@ test(frontend): add integration tests for wallet connection
 chore(deps): update dependencies to latest versions
 ```
 
-## 📄 License
-
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
-### Key License Points:
-- ✅ Commercial use allowed
-- ✅ Modification allowed  
-- ✅ Distribution allowed
-- ✅ Private use allowed
-- ❌ No warranty provided
-- ❌ No liability assumed
-
-## 📞 Support & Community
-
-### Getting Help
-
-- 📖 **Documentation**: Comprehensive guides and API references
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/blinderchief/Avalanche_Team1_Hackathon/issues)
-- 💬 **Discussions**: [GitHub Discussions](https://github.com/blinderchief/Avalanche_Team1_Hackathon/discussions)
-- 🚀 **Feature Requests**: Use GitHub Issues with `enhancement` label
-
-### Community Guidelines
-
-- Be respectful and inclusive
-- Help others learn and grow
-- Share knowledge and experiences
-- Provide constructive feedback
-- Follow our Code of Conduct
-
-### Contact Information
-
-- **Team**: SpectraQ Development Team
-- **Repository**: https://github.com/blinderchief/Avalanche_Team1_Hackathon
-- **Hackathon**: Avalanche Hackathon 2024
-- **Demo**: [Live Demo Link] (when available)
-
 ## 🎯 Roadmap & Future Plans
 
 ### Phase 1: Foundation (Current)
