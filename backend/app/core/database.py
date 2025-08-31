@@ -15,14 +15,20 @@ settings = get_settings()
 
 # Create async engine
 if settings.DATABASE_URL.startswith("sqlite"):
+    # Convert sqlite:/// to sqlite+aiosqlite:/// for async support
+    async_database_url = settings.DATABASE_URL.replace(
+        "sqlite:///", "sqlite+aiosqlite:///")
     engine = create_async_engine(
-        settings.DATABASE_URL,
+        async_database_url,
         echo=settings.LOG_LEVEL == "DEBUG",
         pool_pre_ping=True,
     )
 else:
+    # PostgreSQL with asyncpg driver
+    async_database_url = settings.DATABASE_URL.replace(
+        "postgresql://", "postgresql+asyncpg://")
     engine = create_async_engine(
-        settings.DATABASE_URL.replace("postgresql://", "postgresql+asyncpg://"),
+        async_database_url,
         echo=settings.LOG_LEVEL == "DEBUG",
         pool_size=20,
         max_overflow=30,
