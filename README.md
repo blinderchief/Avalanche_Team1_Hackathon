@@ -1,4 +1,4 @@
-# SpectraQ - AI-Powered Prediction Markets Platform
+# SpectraQ
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://www.python.org/downloads/)
@@ -9,19 +9,149 @@
 
 ## 🚀 Overview
 
-SpectraQ is a next-generation prediction markets platform built on Avalanche blockchain, featuring an AI-powered agent that provides real-time market analysis, cryptocurrency insights, and trading recommendations. The platform combines decentralized prediction markets with advanced AI capabilities powered by MCP (Model Context Protocol) to deliver comprehensive market intelligence.
+SpectraQ is a next-generation prediction markets platform that enables users to trade on the outcomes of real-world events with high accuracy and security. Built on Avalanche blockchain with custom smart contracts, the platform covers predictions on crypto prices, global events, and more, allowing users to make informed decisions and earn real rewards.
+
+The platform features the revolutionary **SpectraQAgent** - an AI-powered assistant that leverages advanced AI capabilities to answer user queries, analyze market data, provide predictions, and facilitate trade executions. This intelligent agent uses distributed AI inference powered by **Comput3.ai**, integrated with the **ElizaOS agent framework** and **Model Context Protocol (MCP)** for accessing external data sources.
+
+SpectraQ operates with its own purpose-built smart contracts deployed on Avalanche, where all trades and market operations are executed directly on-chain, ensuring transparency, security, and decentralized governance.
 
 ### ✨ Key Features
 
 - **🤖 AI-Powered Agent**: SpectraQ AI Agent with real-time market analysis using multiple data sources
-- **�️ ComplAI Compliance Auditor**: AI-powered compliance checking for smart contracts (AML, GDPR, KYC, eERC)
-- **�📊 Real-time Market Data**: Live cryptocurrency prices, sentiment analysis, and market indicators
+- **🏗️ Custom Smart Contracts**: Purpose-built contracts for prediction markets with Uniswap V4 integration
+- **💱 Automated Market Making**: YES/NO token pools powered by Uniswap V4 for seamless trading
+- **🪙 Virtual USD (vUSD)**: Synthetic stable token for liquidity and trading within markets
+- **🔗 Oracle Integration**: Reliable event verification and automatic market settlement
+- **⚖️ ComplAI Compliance Auditor**: AI-powered compliance checking for smart contracts (AML, GDPR, KYC, eERC)
+- **📊 Real-time Market Data**: Live cryptocurrency prices, sentiment analysis, and market indicators
 - **🎯 Prediction Markets**: Create and participate in prediction markets on crypto, sports, politics, and tech
 - **💰 Avalanche Integration**: Built on Avalanche Fuji testnet with optimized smart contracts
 - **📱 Modern UI/UX**: Quantum-themed design with responsive interface and smooth animations
 - **🌐 Community Features**: Social prediction communities and collaborative market analysis
 - **📈 Portfolio Management**: Track positions, performance, P&L, and transaction history
 - **🔮 Market Intelligence**: Fear & Greed Index, news sentiment, and technical analysis
+
+## 🔗 Smart Contracts Overview
+
+SpectraQ operates on a sophisticated smart contract architecture built specifically for prediction markets, leveraging the power of Avalanche blockchain and Uniswap V4 for optimal performance and liquidity.
+
+### Core Contract Components
+
+#### **Market Contract**
+- **Purpose**: Core contract where markets are created, managed, and settled
+- **Functions**: Market creation, proposal submissions, trading logic, and payout/redemption
+- **Security**: Multi-signature governance and time-locked operations
+- **Integration**: Direct interface with Uniswap V4 pools and oracle systems
+
+#### **Uniswap V4 Pools**
+For every proposal, two main automated market maker (AMM) pools are created:
+- **YES/vUSD Pool**: Trading pool for YES-side outcome tokens
+- **NO/vUSD Pool**: Trading pool for NO-side outcome tokens
+- **Features**: Accept liquidity from anyone, powered by Uniswap V4's advanced AMM logic
+- **Benefits**: Deep liquidity, minimal slippage, and fair price discovery
+
+#### **Decision Tokens (YES/NO)**
+Each market/proposal issues unique ERC20 tokens:
+- **YES Token**: Represents a share in the proposed outcome occurring
+- **NO Token**: Represents a share in the outcome not occurring  
+- **Mechanics**: Minted/burned based on trading activity and freely tradable
+- **Settlement**: Winning tokens redeemable for payouts after market resolution
+
+#### **Virtual USD (vUSD)**
+- **Purpose**: Synthetic stable token for liquidity and trading within each market
+- **Stability**: Pegged to USD value through algorithmic mechanisms
+- **Usage**: Base currency for all market operations and settlements
+- **Liquidity**: Backed by collateral reserves and market maker activities
+
+#### **Hooks / SwapHook**
+Custom Uniswap V4 hooks add sophisticated logic:
+- **Market Resolution**: Automated settlement based on oracle data
+- **Fee Management**: Dynamic fee structures based on market conditions
+- **Oracle Integration**: Secure price feeds and event outcome verification
+- **Outcome Security**: Multi-layer validation for result integrity
+
+#### **Resolver/Oracle**
+- **Function**: Verifies real-world event outcomes and triggers correct settlement
+- **Security**: Multiple data source validation and dispute resolution mechanism
+- **Automation**: Automated settlement once outcome is confirmed
+- **Governance**: Community-driven dispute resolution for edge cases
+
+### Pool Creation Flow
+
+#### **1. Market Creation**
+```solidity
+// User calls createMarket with details
+createMarket({
+  question: "Will Bitcoin reach $100,000 by end of 2024?",
+  asset: "BTC",
+  deadline: 1735689600, // Unix timestamp
+  category: "cryptocurrency",
+  minDeposit: 0.1 ether
+})
+```
+
+#### **2. Proposal Submission**
+- User submits a proposal, triggering deployment of new YES/NO/vUSD tokens
+- Uniswap V4 pools for YES/vUSD and NO/vUSD are automatically created
+- Initial liquidity from `minDeposit` is seeded automatically to bootstrap trading
+
+#### **3. Liquidity Provision**
+- Anyone can add (and remove) liquidity to the pools for earning trading fees
+- Pools price YES/NO tokens using standard Uniswap V4 AMM logic
+- Liquidity providers earn fees from trading volume and can exit anytime
+
+#### **4. Trading & Resolution**
+- Traders buy/sell YES/NO tokens based on their belief or for hedging purposes
+- Real-time price discovery through AMM mechanics reflects market sentiment
+- After deadline, market is resolved via oracle/hook system
+- Winning tokens become redeemable for payouts proportional to their holdings
+
+### Technical Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                        Market Contract                          │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
+│  │  Market Creator │  │  Proposal Logic │  │  Settlement     │ │
+│  │  & Manager      │  │  & Validation   │  │  & Payouts      │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+                                    │
+                                    ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                     Uniswap V4 Integration                     │
+│  ┌─────────────────┐              │              ┌─────────────┐ │
+│  │   YES/vUSD      │◄─────────────┼─────────────►│  NO/vUSD    │ │
+│  │   AMM Pool      │              │              │  AMM Pool   │ │
+│  │                 │              │              │             │ │
+│  │ • Liquidity     │              │              │ • Liquidity │ │
+│  │ • Price Discovery│             │              │ • Trading   │ │
+│  │ • Fee Collection │              │              │ • Arbitrage │ │
+│  └─────────────────┘              │              └─────────────┘ │
+└────────────────────────────────────┼────────────────────────────┘
+                                     │
+                                     ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    Oracle & Hook System                        │
+│  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐ │
+│  │   Data Feed     │  │   SwapHook      │  │   Resolver      │ │
+│  │   Aggregation   │  │   Logic         │  │   & Settlement  │ │
+│  │                 │  │                 │  │                 │ │
+│  │ • Price Feeds   │  │ • Fee Logic     │  │ • Event Verify  │ │
+│  │ • Event Data    │  │ • Resolution    │  │ • Auto Settle   │ │
+│  │ • Multi-Source  │  │ • Security      │  │ • Dispute Res.  │ │
+│  └─────────────────┘  └─────────────────┘  └─────────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Security & Governance
+
+- **Multi-Signature**: Critical functions require multiple signatures
+- **Time Locks**: Important changes have mandatory delay periods
+- **Audit Trail**: All operations are logged and verifiable on-chain
+- **Upgrade Mechanism**: Secure proxy pattern for contract upgrades
+- **Emergency Pause**: Circuit breakers for emergency situations
+- **Community Governance**: Token holders vote on key parameters and disputes
 
 ## 🏗️ Architecture
 
