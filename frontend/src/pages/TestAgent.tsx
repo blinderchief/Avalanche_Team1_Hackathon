@@ -1,20 +1,27 @@
 // Integration test for SpectraQ Agent frontend and backend
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
+import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { sendQuery, fetchAvailableTools } from '@/lib/agent/backendService';
 
 const TestAgentIntegration = () => {
+  const navigate = useNavigate();
   const [query, setQuery] = useState('');
   const [response, setResponse] = useState('');
   const [tools, setTools] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [rawResponse, setRawResponse] = useState({});
+
+  const handleGoBack = () => {
+    navigate(-1); // Go back to the previous page
+  };
   
   // Fetch available tools on component mount
   useEffect(() => {
@@ -60,8 +67,20 @@ const TestAgentIntegration = () => {
   };
   
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6">SpectraQ Agent Integration Test</h1>
+    <div className="container mx-auto pt-28 pb-8 px-4 max-w-4xl">
+      {/* Header with Back Button */}
+      <div className="flex items-center space-x-4 mb-6">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleGoBack}
+          className="flex items-center space-x-2 hover:bg-muted"
+        >
+          <ArrowLeftIcon className="w-4 h-4" />
+          <span>Back</span>
+        </Button>
+        <h1 className="text-2xl font-bold">SpectraQ Agent Integration Test</h1>
+      </div>
       
       {/* Query input */}
       <Card className="mb-6">

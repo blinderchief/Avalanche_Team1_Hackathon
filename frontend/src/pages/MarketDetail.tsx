@@ -194,18 +194,24 @@ const MarketDetail = () => {
                   </p>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     {market.proposals.map((proposal) => (
-                      <Card key={proposal.id} className="bg-muted/20 border-border/30">
-                        <CardContent className="pt-4">
-                          <div className="flex items-start justify-between">
-                            <div className="flex-1">
+                      <Card key={proposal.id} className="bg-muted/20 border-border/30 h-full flex flex-col">
+                        <CardContent className="pt-4 flex flex-col h-full">
+                          <div className="flex items-start justify-between flex-1">
+                            <div className="flex-1 flex flex-col">
                               <h4 className="font-semibold text-foreground mb-2">{proposal.title}</h4>
-                              <p className="text-sm text-muted-foreground mb-3">{proposal.description}</p>
-                              <div className="flex items-center space-x-4 text-xs text-muted-foreground">
-                                <span>Ends: {new Date(proposal.endDate).toLocaleDateString()}</span>
-                                <span>{proposal.volume} volume</span>
-                                <span>{proposal.participants} participants</span>
+                              <p className="text-sm text-muted-foreground mb-3 flex-1">{proposal.description}</p>
+                              <div className="flex items-center flex-wrap gap-2 text-xs text-muted-foreground mt-auto">
+                                <span className="bg-muted/30 px-2 py-1 rounded">
+                                  Ends: {new Date(proposal.endDate).toLocaleDateString()}
+                                </span>
+                                <span className="bg-muted/30 px-2 py-1 rounded">
+                                  {proposal.volume} volume
+                                </span>
+                                <span className="bg-muted/30 px-2 py-1 rounded">
+                                  {proposal.participants} participants
+                                </span>
                                 <Badge 
                                   variant="outline" 
                                   className={`text-xs ${
@@ -220,7 +226,7 @@ const MarketDetail = () => {
                                 </Badge>
                               </div>
                             </div>
-                            <div className="flex space-x-2 ml-4">
+                            <div className="flex flex-col space-y-2 ml-4 flex-shrink-0">
                               <div className="text-center bg-success/10 border border-success/20 rounded-lg p-3 min-w-[80px]">
                                 <div className="text-xs font-medium text-success mb-1">YES</div>
                                 <div className="text-sm font-bold text-success">${proposal.yesPrice.toFixed(3)}</div>
